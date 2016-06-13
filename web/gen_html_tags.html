@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>This is a title</title>
+<script>
+gUnkTags = [];      // unknown HTML tags
+var gTags = [
+    "a",
+    "abbr",
+    "acronym",
+    "address",
+    "applet",
+    "area",
+    "article",
+    "aside",
+    "audio",
+    "b",
+    "base",
+    "basefont",
+//        "bdi",
+    "bdo",
+    "bgsound",
+    "big",
+    "blink",
+    "blockquote",
+    "body",
+    "br",
+    "button",
+    "canvas",
+    "caption",
+    "center",
+    "cite",
+    "code",
+    "col",
+    "colgroup",
+//        "command",
+    "datalist",
+    "dd",
+    "del",
+//        "details",
+    "dfn",
+    "dir",
+    "div",
+    "dl",
+    "dt",
+    "em",
+    "embed",
+    "fieldset",
+    "figcaption",
+    "figure",
+    "font",
+    "footer",
+    "form",
+    "frame",
+    "frameset",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "head",
+    "header",
+    "hgroup",
+    "hr",
+    "html",
+    "i",
+    "iframe",
+    "image",
+    "img",
+    "input",
+    "ins",
+    "isindex",
+    "kbd",
+    "keygen",
+    "label",
+    "legend",
+    "li",
+    "link",
+    "listing",
+    "map",
+    "mark",
+    "marquee",
+    "menu",
+    "meta",
+//        "meter",
+    "multicol",
+    "nav",
+    "nobr",
+    "noembed",
+    "noframes",
+    "noscript",
+    "object",
+    "ol",
+    "optgroup",
+    "option",
+    "output",
+    "p",
+    "param",
+//    "plaintext",      recognized, but disables further parsing of document
+    "pre",
+    "progress",
+    "q",
+//        "rp",
+//        "rt",
+//        "ruby",
+    "s",
+    "samp",
+    "script",
+    "section",
+    "select",
+    "small",
+    "source",
+    "span",
+    "strike",
+    "strong",
+    "style",
+    "sub",
+//        "summary",
+    "sup",
+    "table",
+    "tbody",
+    "td",
+    "textarea",
+    "tfoot",
+    "th",
+    "thead",
+//        "time",
+    "title",
+    "tr",
+//        "track",
+    "tt",
+    "u",
+    "ul",
+    "var",
+    "video",
+    "wbr",
+    "xmp"
+];
+
+function CreateElements() {
+    for (var i = 0; i < gTags.length; ++i) {
+        try {
+            var tag = document.createElement(gTags[i]);
+            if (tag instanceof window.HTMLUnknownElement) {
+                gUnkTags.push(tag.tagName);
+                tag = null;
+            }
+            else {
+//                document.body.appendChild(tag);
+            }
+        }
+        catch (e) {
+            document.write("ERROR: Can't create element for \"" + gTags[i] + "\"!: " + e + "<br>");
+        }
+    }
+}
+
+function DumpUnknownTags()
+{
+    document.write("----- Unrecognized Tags -----<br>");
+    if (gUnkTags.length == 0) {
+        document.write("all were recognized")
+    }
+
+    for (i in gUnkTags) {
+        document.write(gUnkTags[i] + "<br>");
+    }
+}
+
+function DumpDOMTree()
+{
+    document.write("----- Nodes in DOM Tree -----<br>");
+
+    var treeWalker = document.createTreeWalker(
+        document.firstChild,
+        NodeFilter.SHOW_ELEMENT,
+        { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
+        false
+    );
+
+    var nodeList = [];
+    while (treeWalker.nextNode()) {
+        nodeList.push(treeWalker.currentNode.tagName);
+    }
+    for (i in nodeList) {
+        document.write(nodeList[i] + "<br>");
+    }
+}
+
+function emit(tagName, content)
+{
+    var str = "<br>&lt;" + tagName + "&gt;";
+    if (content) {
+        str = str + "<br>" + content;
+        str = str + "<br>&lt;/" + tagName + "&gt;";
+    }
+    else {
+        str = str + "&lt;/" + tagName + "&gt;";
+    }
+
+    document.write(str);
+}
+
+// tables have some tags that must be children of the <table> tag:
+//
+// <caption> has to be inside <table>
+// <colgroup> has to be inside <table>
+// <col> has to be inside <colgroup>
+// <tbody> has to be inside <table>
+// <tr> has to be inside <table>
+// <td> has to be inside <tr>
+// <tfoot> has to be inside <table
+// <th> has to be inside <tr>
+// <thead> has to be inside <table>
+// <tr> has to be inside <table>
+function WriteHTMLPage()
+{
+    for (i in gTags) {
+        emit(gTags[i], "");
+    }
+}
+
+</script>
+</head>
+<body>
+
+<script>
+CreateElements();
+DumpUnknownTags();
+//WriteHTMLPage();
+</script>
+
+</body>
+</html>
